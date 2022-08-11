@@ -1,8 +1,16 @@
+"""
+==========================================
+Title:  Web scraping academic staff profile 
+Site:  https://cs.usm.my/index.php/about/our-people/facultycs-member
+Author: Teoh Sin Yee
+Date:   11 Aug 2022
+==========================================
+"""
 import requests
-from bs4 import BeautifulSoup, NavigableString, Tag
 import pandas as pd
-import csv
 from collections import OrderedDict
+from bs4 import BeautifulSoup, NavigableString, Tag
+
 
 baseurl = "https://cs.usm.my"
 
@@ -14,84 +22,82 @@ r = requests.get('https://cs.usm.my/index.php/about/our-people/facultycs-member'
 
 soup = BeautifulSoup(r.content, 'lxml')
 
-productlist = soup.find_all('p')
-#print(productlist)
-productlinks = []
+lecturer_list = soup.find_all('p')
 
-for item in productlist:
+lecturer_links = []
+
+for item in lecturer_list:
     for link in item.find_all('a', href = True):
-        productlinks.append(baseurl + link['href'])
+        lecturer_links.append(baseurl + link['href'])
         
-#print(productlinks)
 
-testlink = 'https://cs.usm.my/index.php/faculty-member/174-chew-xin-ying-dr'
-productlinks = productlinks[16:]
-print(productlinks)
-lec_list = []
+lecturer_links = lecturer_links[16:]
 
-for link in productlinks:
+lecturer_profile = []
+
+for link in lecturer_links:
     r = requests.get(link, headers= headers)
     soup = BeautifulSoup(r.content, 'lxml')
-    jobDescription = OrderedDict()
+    profile_description = OrderedDict()
 
-    
     name = soup.find('h1',class_="uk-article-title").text.strip()
     title = soup.find('strong').text.strip()
     classname_research = "uk-grid uk-grid-divider uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-3"
-    
-    
+   
    # email = soup.find('ul',class_=classname_research).findAll('p', class_=False)[0]
+   # -- email can't be scraped because of spam protection --
+
     try:
         research_cluster = soup.find('ul',class_=classname_research).findAll('p', class_=False)[2].text
         research_interest = soup.find('ul',class_=classname_research).findAll('p', class_=False)[3].text
         specialization = soup.find('ul',class_= classname_research).findAll('p', class_=False)[4].text
     except:
-        research_cluster = "missing info"
-        research_interest = "missing info"
-        specialization = "missing info"
+        research_cluster, research_interest, specialization = "missing info"
 
-    jobDescription.update(
+    profile_description.update(
         {'Name': name,
         'Title': title,
         'Research Cluster':research_cluster,
         'Specialization':specialization
 
     })
-
-    ##############################################################
     
-    jobDetails = soup.find('div',class_="tm-article-content")
+    profile_details = soup.find('div',class_ = "tm-article-content")
     all_headers = ['h3','h5']
 
-    for header in jobDetails.find_all(all_headers)[0:2]:
-        jobDetail = header.get_text().strip()
+    for header in profile_details.find_all(all_headers)[0:2]:
+        info_get = header.get_text().strip()
         nextNode = header
-        jobDetailText = []
+        profile_details_text = []
         while True:
             nextNode = nextNode.nextSibling
-                # This writes out the last of the H3 tags and its following contents
+            # This writes out the last of the H3 & H5 tags and its following contents
             if not nextNode:
-                jobDescription[jobDetail] = "\n".join(jobDetailText)
+                profile_description[info_get] = "\n".join(profile_details_text)
                 break
-                # This adds non-H3 tags to the text to attach to the text of the H3
+                # This adds non-H3 & non-H5 tags to the text to attach to the text of the H3 & H5
             elif isinstance(nextNode, NavigableString):
                 if nextNode.strip():
-                    jobDetailText.append(nextNode.strip())
+                    profile_details_text.append(nextNode.strip())
                     pass
-                # This detects the next H2 and writes the compiled text to the previous H2
+                # This detects the next H3 & H5 and writes the compiled text to the previous H3 & H5
             elif isinstance(nextNode, Tag):
                 if nextNode.name in all_headers and len(nextNode.name) <30:
-                    jobDescription[jobDetail] = "\n".join(jobDetailText)
+                    profile_description[info_get] = "\n".join(profile_details_text)
                     break
-                jobDetailText.append(nextNode.get_text(strip=True))
+                profile_details_text.append(nextNode.get_text(strip=True))
+   
+    lecturer_profile.append(profile_description)
+    print('saving: ',profile_description['Name'])
+    print('keys: ',profile_description.keys())
 
-    
-    #jobDescription.move_to_end('Name', last=False)
-    lec_list.append(jobDescription)
-    print('saving: ',jobDescription['Name'])
-    print('keys: ',jobDescription.keys())
+df_profile = pd.DataFrame(lecturer_profile)
+print(df_profile)
 
+names = df_profile['Name'].tolist()
+source_url = lecturer_links
 
-df = pd.DataFrame(lec_list)
-print(df)
-df.to_csv('test5.csv',index=None,header=True)
+#df_profile.to_csv('lecturer_profile.csv', index=None, header=True)
+
+dir = pd.DataFrame(list(map(list, zip(names,source_url))))
+dir.to_csv('directory.csv', index=None, header=True) 
