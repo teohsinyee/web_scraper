@@ -3,7 +3,7 @@
 Title:  Web scraping academic staff profile <br>
 Site:  https://cs.usm.my/index.php/about/our-people/facultycs-member <br>
 Tech Stack: [BeautifulSoup](https://beautiful-soup-4.readthedocs.io/en/latest/) <br>
-Purpose: To search potential FYP supervisors easily using filter function. <br>
+Purpose: To 🔎 potential FYP supervisors easily using filter function. <br>
 Data file: https://bit.ly/cslecturer
 ## Data description
 
@@ -19,7 +19,14 @@ Data file: https://bit.ly/cslecturer
 | source_url | directory to official site  |
 
 ## How to use?
+<img src="/images/filter_security.gif" width="480" height="350"/>
+
+1. Open [file](https://bit.ly/cslecturer) *You may download the file as xlsx
+2. Create filter views
+3. Select 'Filter by condition' 
+4. Key in desired value E.g. security, software engineering
+
 
 #### Disclaimer
 Feel free to create pull request if you are interested to enhance the data quality.
-This repo is for educational purposes only.
+This repo is for educational purposes only. 🤗🤗
