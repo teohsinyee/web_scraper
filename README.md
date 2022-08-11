@@ -4,7 +4,7 @@ Title:  Web scraping academic staff profile <br>
 Site:  https://cs.usm.my/index.php/about/our-people/facultycs-member <br>
 Tech Stack: [BeautifulSoup](https://beautiful-soup-4.readthedocs.io/en/latest/) <br>
 Purpose: To search potential FYP supervisors easily using filter function. <br>
-
+Data file: https://bit.ly/cslecturer
 ## Data description
 
 | column_name | description |
