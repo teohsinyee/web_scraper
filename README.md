@@ -1,6 +1,6 @@
 # web_scraper
 
-Title:  Web scraping academic staff profile <br>
+Title:  Scrap academic staff profile from static site <br>
 Site:  https://cs.usm.my/index.php/about/our-people/facultycs-member <br>
 Tech Stack: [BeautifulSoup](https://beautiful-soup-4.readthedocs.io/en/latest/) <br>
 Purpose: To 🔎 potential FYP supervisors easily using filter function. <br>
@@ -30,3 +30,5 @@ Data file: https://bit.ly/cslecturer
 #### Disclaimer
 Feel free to create pull request if you are interested to enhance the data quality.
 This repo is for educational purposes only. 🤗🤗
+
+Future works: Will demo web scraping for dynamic JS site.
