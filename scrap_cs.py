@@ -1,6 +1,6 @@
 """
 ==========================================
-Title:  Web scraping academic staff profile 
+Title:  Web scraping academic staff profile (Static Site)
 Site:  https://cs.usm.my/index.php/about/our-people/facultycs-member
 Author: Teoh Sin Yee
 Date:   11 Aug 2022
